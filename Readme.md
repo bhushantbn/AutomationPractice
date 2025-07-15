@@ -1,3 +1,4 @@
+Login validation Scenario Practice Form :-
 | #  | **Scenario**                        | **Username** | **Password**                | **Expected Result / Message**                                      |
 | -- | ----------------------------------- | ------------ | --------------------------- | ------------------------------------------------------------------ |
 | 1  | Empty password                      | `user1`      | *(blank)*                   | `Password is required.`                                            |
