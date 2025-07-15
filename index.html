@@ -80,7 +80,7 @@
 <body>
   <div class="container">
     <h2>Login</h2>
-    <form onsubmit="event.preventDefault(); validateLogin();">
+    <form id="loginForm">
       <label for="username">Username:</label>
       <input type="text" id="username" name="username" autocomplete="username" />
 
@@ -106,23 +106,25 @@
       msgDiv.className = "success-text";
     }
 
-    function validateLogin() {
-      const username = document.getElementById("username").value.trim();
-      const password = document.getElementById("password").value.trim();
+    function validateLogin(event) {
+      event.preventDefault();
+
+      const usernameInput = document.getElementById("username");
+      const passwordInput = document.getElementById("password");
       const msgDiv = document.getElementById("errorMsg");
+
+      const username = usernameInput.value.trim();
+      const password = passwordInput.value.trim();
 
       msgDiv.textContent = "";
       msgDiv.className = "";
 
-      // Blank field scenario
-      if (!username && !password)
-        return showError("Username and Password are required.");
-      if (!password)
-        return showError("Password is required.");
-      if(!username)
-        return showError("Username is required.")
+      // Blank input checks
+      if (!username && !password) return showError("Username and Password are required.");
+      if (!username) return showError("Username is required.");
+      if (!password) return showError("Password is required.");
 
-      // 🔐 Injection detection first
+      // 🔐 Injection checks
       if (/<script.*?>.*?<\/script>/i.test(password))
         return showError("Scripts are not allowed in password.");
       if (/('|--|;|\bOR\b|\bAND\b|=)/i.test(password))
@@ -148,8 +150,11 @@
       if (["password1@", "welcome1@", "admin123@"].includes(password.toLowerCase()))
         return showError("Password is too common or weak.");
 
-      showSuccess("Login successful (validation passed)");
+      // ✅ Success – Redirect
+      window.location.href = "dashboard.html";
     }
+
+    document.getElementById("loginForm").addEventListener("submit", validateLogin);
   </script>
 </body>
 
