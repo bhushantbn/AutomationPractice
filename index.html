@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Login Form</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f4f4f4;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+
+    .container {
+      background: white;
+      padding: 30px;
+      border-radius: 6px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+      width: 320px;
+    }
+
+    h2 {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      box-sizing: border-box;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 15px;
+      background-color: #007bff;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #errorMsg {
+      margin-top: 15px;
+      padding: 10px;
+      border-radius: 4px;
+      font-weight: bold;
+    }
+
+    .error-text {
+      color: #721c24;
+      background-color: #f8d7da;
+      border: 1px solid #f5c6cb;
+    }
+
+    .success-text {
+      color: #155724;
+      background-color: #d4edda;
+      border: 1px solid #c3e6cb;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="container">
+    <h2>Login</h2>
+    <form onsubmit="event.preventDefault(); validateLogin();">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" autocomplete="username" />
+
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" autocomplete="current-password" />
+
+      <button type="submit">Login</button>
+    </form>
+
+    <div id="errorMsg"></div>
+  </div>
+
+  <script>
+    function showError(message) {
+      const msgDiv = document.getElementById("errorMsg");
+      msgDiv.textContent = message;
+      msgDiv.className = "error-text";
+    }
+
+    function showSuccess(message) {
+      const msgDiv = document.getElementById("errorMsg");
+      msgDiv.textContent = message;
+      msgDiv.className = "success-text";
+    }
+
+    function validateLogin() {
+      const username = document.getElementById("username").value.trim();
+      const password = document.getElementById("password").value.trim();
+      const msgDiv = document.getElementById("errorMsg");
+
+      msgDiv.textContent = "";
+      msgDiv.className = "";
+
+      // Blank field scenario
+      if (!username && !password)
+        return showError("Username and Password are required.");
+      if (!password)
+        return showError("Password is required.");
+      if(!username)
+        return showError("Username is required.")
+
+      // 🔐 Injection detection first
+      if (/<script.*?>.*?<\/script>/i.test(password))
+        return showError("Scripts are not allowed in password.");
+      if (/('|--|;|\bOR\b|\bAND\b|=)/i.test(password))
+        return showError("SQL-like patterns are not allowed in password.");
+
+      // 🧠 Logical validations
+      if (password.length < 8)
+        return showError("Password must be at least 8 characters.");
+      if (password.length > 20)
+        return showError("Password must not exceed 20 characters.");
+      if (!/[A-Z]/.test(password))
+        return showError("Password must contain at least one uppercase letter.");
+      if (!/[a-z]/.test(password))
+        return showError("Password must contain at least one lowercase letter.");
+      if (!/[0-9]/.test(password))
+        return showError("Password must contain at least one digit.");
+      if (!/[!@#$%^&*]/.test(password))
+        return showError("Password must contain at least one special character (!@#$%^&*).");
+      if (/\s/.test(password))
+        return showError("Password must not contain spaces.");
+      if (password === username)
+        return showError("Password must not be the same as username.");
+      if (["password1@", "welcome1@", "admin123@"].includes(password.toLowerCase()))
+        return showError("Password is too common or weak.");
+
+      showSuccess("Login successful (validation passed)");
+    }
+  </script>
+</body>
+
+</html>
